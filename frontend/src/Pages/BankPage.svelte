@@ -187,36 +187,119 @@
         {name: "Сорус", spec: "оптовая торговля фруктами (Санкт-Петербург)", branch: "Оптовая торговля"},
         {name: "Останкинский МПЗ", spec: "мясопереработка (Москва)", branch: "Пищевая пром."} 
     ];
+    let newCompanyList = companyList;
+    let forInput = "";
+    let selectCompany = "";
+    let styleForHeader = "";
+
+    let name = "";
+    let specialization = "";
+    let branch = "";
+
+    function search(event){
+        let req = event.target.value;
+        if (req === ""){
+            newCompanyList = companyList;
+        } else {
+            newCompanyList = [];
+            companyList.forEach(el => {
+                let elName = el.name.toLowerCase();
+                let elSpec = el.spec.toLowerCase();
+                let elBranch = el.branch.toLowerCase();
+                if ((elName.indexOf(req.toLowerCase()) !== -1)||(elSpec.indexOf(req.toLowerCase()) !== -1)||(elBranch.indexOf(req.toLowerCase()) !== -1)) {
+                    newCompanyList = newCompanyList.concat(el);
+                }
+            })
+        }
+    }
+    function selectionCompany(company){
+        selectCompany = company.name + " " + company.spec; 
+        name = company.name;
+        specialization = company.spec;
+        branch = company.branch;
+        styleForHeader = "background-color: transparent";
+    }
 </script>
 
 
 <main class="flex">
     <div class="purpleDiv"></div>
     <div class="glass">
-        <div class="inputBox flex">
-            <svg class="m-c" style="margin-left: 1rem;" width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.0625 0C26.4859 0 34.125 7.63914 34.125 17.0625C34.125 20.9049 32.8549 24.4507 30.7116 27.3029L30.8453 27.4074L30.9736 27.5264L38.2861 34.8389C39.238 35.7908 39.238 37.3342 38.2861 38.2861C37.4074 39.1648 36.0248 39.2323 35.0686 38.4888L34.8389 38.2861L27.5264 30.9736C27.4431 30.8902 27.367 30.8023 27.2982 30.7106C24.4507 32.8549 20.9049 34.125 17.0625 34.125C7.63914 34.125 0 26.4859 0 17.0625C0 7.63914 7.63914 0 17.0625 0ZM17.0625 4.875C10.3315 4.875 4.875 10.3315 4.875 17.0625C4.875 23.7935 10.3315 29.25 17.0625 29.25C23.7935 29.25 29.25 23.7935 29.25 17.0625C29.25 10.3315 23.7935 4.875 17.0625 4.875Z" fill="url(#paint0_linear)"/>
-                <defs>
-                <linearGradient id="paint0_linear" x1="39" y1="-1.16229e-06" x2="1.91193e-07" y2="49.5625" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#A55EEA"/>
-                <stop offset="1" stop-color="#3867D6"/>
-                </linearGradient>
-                </defs>
-            </svg>
+        <div class="header" style={styleForHeader}>
+            <div class="inputBox flex">
+                <svg class="m-c" style="margin-left: 1rem;" width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.0625 0C26.4859 0 34.125 7.63914 34.125 17.0625C34.125 20.9049 32.8549 24.4507 30.7116 27.3029L30.8453 27.4074L30.9736 27.5264L38.2861 34.8389C39.238 35.7908 39.238 37.3342 38.2861 38.2861C37.4074 39.1648 36.0248 39.2323 35.0686 38.4888L34.8389 38.2861L27.5264 30.9736C27.4431 30.8902 27.367 30.8023 27.2982 30.7106C24.4507 32.8549 20.9049 34.125 17.0625 34.125C7.63914 34.125 0 26.4859 0 17.0625C0 7.63914 7.63914 0 17.0625 0ZM17.0625 4.875C10.3315 4.875 4.875 10.3315 4.875 17.0625C4.875 23.7935 10.3315 29.25 17.0625 29.25C23.7935 29.25 29.25 23.7935 29.25 17.0625C29.25 10.3315 23.7935 4.875 17.0625 4.875Z" fill="url(#paint0_linear)"/>
+                    <defs>
+                    <linearGradient id="paint0_linear" x1="39" y1="-1.16229e-06" x2="1.91193e-07" y2="49.5625" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#A55EEA"/>
+                    <stop offset="1" stop-color="#3867D6"/>
+                    </linearGradient>
+                    </defs>
+                </svg>
                 
-            <input type="text" placeholder="Введите название компании...">
-            <button class="gradButtonPurple">Сброс</button>
+                {#if selectCompany === ""}
+                    <input bind:value={forInput} on:input={search} type="text" placeholder="Введите название компании...">
+                {:else}
+                    <p class="purpleText">{selectCompany}</p>
+                {/if}
+                <button class="gradButtonPurple" on:click={() => {forInput = ""; newCompanyList = companyList; selectCompany = "";styleForHeader = ""}}>Сброс</button>
+            </div>
+            <div>
+                {#if selectCompany === ""}
+                    {#each newCompanyList as company, num}
+                        {#if num < 22}
+                            <p class="companyText flex" style="justify-content: space-between" on:click={() => selectionCompany(company)}>
+                                <nobr>
+                                    <nobr style="font-size: 20px;">{company.name} - </nobr>
+                                    <nobr>{company.spec}</nobr>
+                                </nobr>
+                                <nobr class="dopText">{company.branch}</nobr>
+                            </p>
+                        {/if}
+                    {/each}
+                {/if}
+            </div>
         </div>
-        {#each companyList as company}
-            <p>{company.name} {company.spec} {company.branch}</p>
-        {/each}
+        
+        <div class="main">
+            {#if selectCompany !== ""}
+                <p class="bigPurpleText">{name}</p>
+                <p class="grayText" style="width: 50%;">Место для умного ответа на умный вопрос. В котором бот пояснит за свой выбор. Еще одно очко в пользу искуственного интелекта.  Бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла</p>
+                <p class="bigPurpleText">Ключевые данные</p>
+                <div class="flex">
+                    <div>
+                        <p class="bigPurpleNumber">420</p>
+                        <p class="blackText">Классная цифра</p>
+                    </div>
+                    <div style="margin-left: 4rem;">
+                        <p class="bigPurpleNumber">69</p>
+                        <p class="blackText">Классная цифра</p>
+                    </div>
+                    <div style="margin-left: 4rem;">
+                        <p class="bigPurpleNumber">666</p>
+                        <p class="blackText">Классная цифра</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <div>
+                        <p class="bigPurpleText">Дополнительная информация</p>
+                        <p class="grayText" style="width: 50%;">Место для умного ответа на умный вопрос. В котором бот пояснит за свой выбор. Еще одно очко в пользу искуственного интелекта.  Бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла</p>
+                    </div>
+                    <button class="gradButtonPurple downButton">
+                        <svg width="49" height="49" viewBox="0 0 49 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M45.9375 30.625C47.5081 30.625 48.8025 31.8072 48.9794 33.3303L49 33.6875V39.8125C49 44.7054 45.1752 48.705 40.3523 48.9844L39.8125 49H9.1875C4.2946 49 0.295038 45.1752 0.0155962 40.3523L0 39.8125V33.6875C0 31.9961 1.37113 30.625 3.0625 30.625C4.63306 30.625 5.92749 31.8072 6.1044 33.3303L6.125 33.6875V39.8125C6.125 41.3831 7.30725 42.6775 8.83035 42.8544L9.1875 42.875H39.8125C41.3831 42.875 42.6775 41.6928 42.8544 40.1697L42.875 39.8125V33.6875C42.875 31.9961 44.2461 30.625 45.9375 30.625ZM24.5 0C26.1914 0 27.5625 1.37113 27.5625 3.0625V26.2916L31.522 22.3345C32.626 21.2305 34.3631 21.1456 35.5645 22.0797L35.853 22.3345C36.957 23.4385 37.0419 25.1756 36.1078 26.377L35.853 26.6655L26.6655 35.853C25.5615 36.957 23.8244 37.0419 22.623 36.1078L22.3345 35.853L13.147 26.6655C11.951 25.4695 11.951 23.5305 13.147 22.3345C14.251 21.2305 15.9881 21.1456 17.1895 22.0797L17.478 22.3345L21.4375 26.2916V3.0625C21.4375 1.37113 22.8086 0 24.5 0Z" fill="white"/>
+                        </svg>
+                    </button>
+                </div>
+            {/if}
+        </div>
     </div>
 </main>
 
 <style>
     .purpleDiv{
         width: 100%;
-        height: 100vh;
+        height: 120vh;
         background: radial-gradient(farthest-corner at 40px 40px, #45AAF2 0%, #4B7BEC 45.83%, #A55EEA 100%);
     }
     .glass{
@@ -225,14 +308,48 @@
         left: 15%;
         top: 10vh;
         width: 70%;
-        height: 80vh;
-        background: linear-gradient(0deg, rgba(75, 123, 236, 0.2), rgba(75, 123, 236, 0.2)),
-        linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8));
+        min-height: 80vh;
+        background: #FFFFFFD6;
+
         backdrop-filter: blur(24px);
+    }
+    .header{
+        background-color: #FFFFFF40;
+        border-radius: 30px;
+        padding-bottom: 0.8rem;
+    }
+    .purpleText{
+        font-family: 'M PLUS 1p', sans-serif;
+        font-size: 18px;
+        line-height: 16px;
+        margin-left: 1rem;
+        margin-top: auto;
+        margin-bottom: auto;
+        cursor: default;
+        color: #6373EC;
+        font-weight: 600;
+    }
+    .companyText{
+        font-family: 'M PLUS 1p', sans-serif;
+        font-size: 18px;
+        line-height: 16px;
+        margin-left: 4rem;
+        cursor: default;
+    }
+    .companyText:hover{
+        color: #6373EC;
+        font-weight: 600;
+    }
+    .companyText .dopText{
+        color: #868686;
+        margin-right: 4rem;
+    }
+    .companyText:hover .dopText{
+        color: #6373EC;
+        font-weight: 600;
     }
     .inputBox{
         background-color: #FFFFFFCC;
-
         height: 4rem;
         border-radius: 30px;
     }
@@ -248,8 +365,45 @@
     }
     .inputBox button{
         margin-left: auto;
+        margin-right: 2rem;
         letter-spacing: 1px;
         padding-left: 2rem;
         padding-right: 2rem;
+    }
+    .main{
+        padding-left: 4rem;
+    }
+    .bigPurpleText{
+        color: #6373EC;
+        font-family: 'M PLUS 1p', sans-serif;
+        font-size: 40px;
+        font-weight: 600;
+        margin-bottom: 0;
+        margin-top: 4rem;
+    }
+    .grayText{
+        color: #737373;
+        font-family: 'M PLUS 1p', sans-serif;
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .bigPurpleNumber{
+        color: #6373EC;
+        font-family: 'Russo One', sans-serif;
+        font-size: 48px;
+        margin-top: 1rem;
+        margin-bottom: 0;
+    }
+    .blackText{
+        margin-top: 0;
+        font-family: 'M PLUS 1p', sans-serif;
+        font-size: 20px;
+    }
+    .downButton{
+        border-radius: 100px;
+        padding: 1.2rem;
+        margin-left: auto;
+        margin-right: 4rem;
+        margin-top: 10rem;
     }
 </style>
