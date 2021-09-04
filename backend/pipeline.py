@@ -46,7 +46,8 @@ def auto_conv(file_path: str) -> str:
 
 def predict(file_path: str):
     text = auto_conv(file_path)
-    if len(set(text)) == 1:
+    ocr = len(set(text)) == 1
+    if ocr:
         ocrmypdf.ocr(file_path, 'buf.pdf', language=['rus'])
         text = auto_conv('buf.pdf').replace('\n', ' ')
-    return model(text)
+    return model(text), ocr
