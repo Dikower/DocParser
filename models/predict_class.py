@@ -171,7 +171,7 @@ class CriteriaClassifier:
         return distance_sum / len(class_criteria["criteria_list"]) # Среднее минимальное расстояние между критериями и текстом. Принадлежит отрезку [0, 1]
 
     def _load_class_criteria_from_json(self, path):
-        with open(path) as json_file:
+        with open(path, 'r', encoding='utf8') as json_file:
             class_criteria = json.load(json_file)
             for cl in class_criteria:
                 for i in range(len(cl["criteria_list"])):
