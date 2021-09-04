@@ -65,7 +65,7 @@ class CriteriaClassifier:
         text = correct_text(text)
         if len(text) == 0:
             self.not_verified["name"] = NOT_VALID_TEXT_LENGTH
-            return self.not_verified
+            return {"result": self.not_verified, "stats": self.stats}
         words = text.split()
             
         simple_distances = [self._compute_simple_criteria_dist(cl, text) for cl in self.classes]
@@ -91,9 +91,9 @@ class CriteriaClassifier:
             return self._return_class(text, time_min[0])
         if len(time_min) > 1:
             self.not_verified["name"] = NOT_VALID_TWO_CLASSES
-            return self.not_verified
+            return {"result": self.not_verified, "stats": self.stats}
         self.not_verified["name"] = NOT_VALID_CLASS
-        return self.not_verified
+        return {"result": self.not_verified, "stats": self.stats}
     
     def get_stats(self):
         return self.stats
@@ -103,7 +103,7 @@ class CriteriaClassifier:
             year, month, day = self._compute_date(text)
             self.classes[ind]["path"][2] = str(year)
             self.classes[ind]["path"][3] = str((month + 3) // 4) + QUARTER
-        return self.classes[ind]
+        return {"result": self.classes[ind], "stats": self.stats}
     
     def _find_min_inds(self, dst: tp.List[float], threshold: float, ignore: tp.Set[int] = {}) -> tp.List[int]:
         min_ind = None
