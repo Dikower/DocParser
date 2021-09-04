@@ -59,21 +59,21 @@ class CriteriaClassifier:
         self.not_verified = not_verified # Уровни для неверифицированных документов
         self.not_verified_lev_threshold = not_verified_lev_threshold # Порог, при достижении которого документ не считается принадлежащим классу
         self.not_verified_simple_threshold = not_verified_simple_threshold
+        self.stats = dict()
         
     def __call__(self, text: str) -> tp.Any:
         text = correct_text(text)
         if len(text) == 0:
             self.not_verified["name"] = NOT_VALID_TEXT_LENGTH
-            return self.not_verified
+            return {"result": self.not_verified, "stats": self.stats}
         words = text.split()
             
         simple_distances = [self._compute_simple_criteria_dist(cl, text) for cl in self.classes]
         lev_distances = [self._compute_lev_criteria_dist(cl, words) for cl in self.classes]
         time_distances = [self._compute_time_dist(cl, text) for cl in self.classes]
-        
-#         print(simple_distances)
-#         print(lev_distances)
-#         print(time_distances)
+        self.stats["simple_distances"] = [(self.classes[i]["code"], simple_distances[i]) for i in range(len(self.classes))]
+        self.stats["lev_distances"] = [(self.classes[i]["code"], lev_distances[i]) for i in range(len(self.classes))]
+        self.stats["time_distances"] = [(self.classes[i]["code"], time_distances[i]) for i in range(len(self.classes))]
         
         simple_min = self._find_min_inds(simple_distances, self.not_verified_simple_threshold)
         if len(simple_min) == 1:
@@ -87,24 +87,23 @@ class CriteriaClassifier:
         time_min = self._find_min_inds(time_distances, 10,
                                        ignore={i for i in range(len(time_distances)) if i not in lev_min})
         
-#         print(simple_min)
-#         print(lev_min)
-#         print(time_min)
-        
         if len(time_min) == 1:
             return self._return_class(text, time_min[0])
         if len(time_min) > 1:
             self.not_verified["name"] = NOT_VALID_TWO_CLASSES
-            return self.not_verified
+            return {"result": self.not_verified, "stats": self.stats}
         self.not_verified["name"] = NOT_VALID_CLASS
-        return self.not_verified
+        return {"result": self.not_verified, "stats": self.stats}
+    
+    def get_stats(self):
+        return self.stats
     
     def _return_class(self, text, ind: int) -> tp.Any:
         if self.classes[ind]["compute_date"] > 0:
             year, month, day = self._compute_date(text)
             self.classes[ind]["path"][2] = str(year)
             self.classes[ind]["path"][3] = str((month + 3) // 4) + QUARTER
-        return self.classes[ind]
+        return {"result": self.classes[ind], "stats": self.stats}
     
     def _find_min_inds(self, dst: tp.List[float], threshold: float, ignore: tp.Set[int] = {}) -> tp.List[int]:
         min_ind = None
@@ -147,7 +146,6 @@ class CriteriaClassifier:
     
     def _compute_time_dist(self, cl, text: str) -> float:
         year, month, day = self._compute_date(text)
-#         print(cl["compute_date"], month)
         if cl["compute_date"] == month:
             return 0
         if cl["compute_date"] < 12 and cl["compute_date"] > 0 and month > 0 and month < 12:
@@ -173,7 +171,7 @@ class CriteriaClassifier:
         return distance_sum / len(class_criteria["criteria_list"]) # Среднее минимальное расстояние между критериями и текстом. Принадлежит отрезку [0, 1]
 
     def _load_class_criteria_from_json(self, path):
-        with open(path) as json_file:
+        with open(path, 'r', encoding='utf8') as json_file:
             class_criteria = json.load(json_file)
             for cl in class_criteria:
                 for i in range(len(cl["criteria_list"])):
