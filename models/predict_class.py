@@ -71,9 +71,9 @@ class CriteriaClassifier:
         simple_distances = [self._compute_simple_criteria_dist(cl, text) for cl in self.classes]
         lev_distances = [self._compute_lev_criteria_dist(cl, words) for cl in self.classes]
         time_distances = [self._compute_time_dist(cl, text) for cl in self.classes]
-        self.stats["simple_distances"] = [(self.classes["code"], simple_distances[i]) for i in range(len(self.classes))]
-        self.stats["lev_distances"] = [(self.classes["code"], lev_distances[i]) for i in range(len(self.classes))]
-        self.stats["time_distances"] = [(self.classes["code"], time_distances[i]) for i in range(len(self.classes))]
+        self.stats["simple_distances"] = [(self.classes[i]["code"], simple_distances[i]) for i in range(len(self.classes))]
+        self.stats["lev_distances"] = [(self.classes[i]["code"], lev_distances[i]) for i in range(len(self.classes))]
+        self.stats["time_distances"] = [(self.classes[i]["code"], time_distances[i]) for i in range(len(self.classes))]
         
         simple_min = self._find_min_inds(simple_distances, self.not_verified_simple_threshold)
         if len(simple_min) == 1:
