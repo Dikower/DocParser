@@ -74,7 +74,7 @@
         left: 35%;
         top: 10vh;
         width: 30%;
-        height: 80vh;
+        /* height: 80vh; */
         background: linear-gradient(0deg, rgba(75, 123, 236, 0.2), rgba(75, 123, 236, 0.2)),
         linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8));
         backdrop-filter: blur(24px);
@@ -123,7 +123,8 @@
         padding: 1rem;
         padding-left: 4rem;
         padding-right: 4rem;
-        margin-top: 10rem;
+        margin-top: 3rem;   
+        margin-bottom: 4rem;
     }
     .switch{
         background-color: white;
