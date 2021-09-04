@@ -119,20 +119,28 @@ class CriteriaClassifier:
         try:
             match_dates = [(m.start(0), m.end(0), tuple(map(int, text[m.start(0):m.end(0)].split())))
                for m in re.finditer(SIMPLE_DATE_REG, text)]
-            match_dates += [(m.start(0), m.end(0), tmp[m.start(0):m.end(0)].split())
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
                             for m in re.finditer(r"\d\d\s(?:" + "|".join(MONTH_NUMBER_P.keys()) + ")\s\d{4}", text)]
-            match_dates += [(m.start(0), m.end(0), tmp[m.start(0):m.end(0)].split())
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
                             for m in re.finditer(r"\d\s(?:" + "|".join(MONTH_NUMBER_P.keys()) + ")\s\d{4}", text)]
-            match_dates += [(m.start(0), m.end(0), tmp[m.start(0):m.end(0)].split())
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
                             for m in re.finditer(r"\d\d\s(?:" + "|".join(MONTH_NUMBER.keys()) + ")\s\d{4}", text)]
-            match_dates += [(m.start(0), m.end(0), tmp[m.start(0):m.end(0)].split())
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
                             for m in re.finditer(r"\d\s(?:" + "|".join(MONTH_NUMBER.keys()) + ")\s\d{4}", text)]
-            match_dates = sorted(match_dates)
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
+                            for m in re.finditer(r"\s(?:" + "|".join(MONTH_NUMBER_P.keys()) + ")\s\d{4}", text)]
+            match_dates += [(m.start(0), m.end(0), text[m.start(0):m.end(0)].split())
+                            for m in re.finditer(r"\s(?:" + "|".join(MONTH_NUMBER.keys()) + ")\s\d{4}", text)]
+            match_dates = sorted(match_dates, reverse=True)
             date = match_dates[-1][-1]
             if type(date[0]) == str:
+                if len(date) == 2 and date[0] in MONTH_NUMBER:
+                    return int(date[1]), MONTH_NUMBER[date[0]], 0
+                if len(date) == 2 and date[0] in MONTH_NUMBER_P:
+                    return int(date[1]), MONTH_NUMBER_P[date[0]], 0
                 if date[1] in MONTH_NUMBER:
-                    return int(date[2]), MONTH_NUMBER[date[-1][1]], int(date[0])
-                return int(date[2]), MONTH_NUMBER_P[date[-1][1]], int(date[0])
+                    return int(date[2]), MONTH_NUMBER[date[1]], int(date[0])
+                return int(date[2]), MONTH_NUMBER_P[date[1]], int(date[0])
             return date[2], date[1], date[0]
         except:
             return 0, 0, 0
