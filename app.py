@@ -1,17 +1,17 @@
-import uuid
-import logging
+import asyncio
 import pathlib
 import time
-import asyncio
+import uuid
+import json
 import aiofiles
 import httpx
+import pandas as pd
 import uvicorn
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
-import pandas as pd
-import pipeline
 
+import pipeline
 
 app = FastAPI()
 app.mount('/public', StaticFiles(directory='public'), name='public')
@@ -30,11 +30,14 @@ app.add_middleware(
 async def register_doc(file_path, nomenclatureId):
     print('Started registration')
     start = time.time()
+    unrecognised = nomenclatureId == 0
+    data = {'unrecognised': unrecognised, 'documentNomenclatureId': None if unrecognised else str(nomenclatureId)}
+
     async with httpx.AsyncClient() as client:
         res = await client.post(
             'http://elib-hackathon.psb.netintel.ru/elib/api/service/documents',
             headers={'Authorization': 'Basic ZWxpYi1zdXBlcnVzZXI6MTIz'},
-            data={'createRequest': '{"documentNomenclatureId": "' + str(nomenclatureId) + '"}'},
+            data={'createRequest': json.dumps(data, ensure_ascii=False)},
             files={'attachments': open(file_path, 'rb')}
         )
         print(f'Registered new doc: {res.text}')
@@ -43,11 +46,12 @@ async def register_doc(file_path, nomenclatureId):
 
 def generate_report(data):
     table = {}
+    print(data)
     res = data['result']
     stat = data['stats']
     table['Название'] = res['name']
     table['Коды номенклатуры'] = res['code']
-    table['Путь'] = '/'.join(res['path'])
+    table['Путь'] = '/'.join(filter(lambda x: x is not None, res['path']))
     table['Список критериев'] = ', '.join(res['criteria_list'])
     table['Распознавание'] = 'Да' if stat['usedOCR'] else 'Нет'
     table['Начало'] = stat['startAt']
@@ -86,6 +90,8 @@ async def process_file(in_file: UploadFile = File(...)):
     # finally:
     #     os.remove(p / in_file.filename)
 
+
+app.mount('/', StaticFiles(directory='./frontend/public', html=True), name='public')
 
 if __name__ == '__main__':
     uvicorn.run('app:app', use_colors=True, reload=True)

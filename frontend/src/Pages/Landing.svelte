@@ -1,8 +1,5 @@
 <script>
     import { push } from "svelte-spa-router";
-
-
-
 </script>
 
 <main>

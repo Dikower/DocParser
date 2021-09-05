@@ -2,6 +2,7 @@
     import { push } from "svelte-spa-router";
     import Dropzone from "svelte-file-dropzone";
     import { DoubleBounce } from 'svelte-loading-spinners'
+    import {apiURL} from "../config";
 
     let windowStatus = 0;
     let sendingStatus = 0;
@@ -10,8 +11,8 @@
         accepted: [],
         rejected: []
     };
+    let report = apiURL + "/public/";
 
-    let report = "https://c579-195-91-215-161.ngrok.io/public/";
     let result = {};
     let stats = {};
 
@@ -26,7 +27,7 @@
         formData.append('in_file', files.accepted[0])
         sendingStatus = 1;
         const response = await fetch(
-            "https://c579-195-91-215-161.ngrok.io/upload",
+            apiURL + "/upload",
             {
                 method: "POST",
                 headers:{
@@ -41,8 +42,7 @@
              console.log(out);
              result = out.result;
              stats = out.stats;
-             report = "https://c579-195-91-215-161.ngrok.io/public/";
-             report =report + out.report;
+             report = apiURL + "/public/" + out.report;
              sendingStatus = 2;
         } else{
             const out = await response.json();

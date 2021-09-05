@@ -5,7 +5,7 @@ import ocrmypdf
 from models.predict_class import CriteriaClassifier
 
 
-model = CriteriaClassifier('../models/criteria.json')
+model = CriteriaClassifier('models/criteria.json')
 
 
 def word(file_path: str) -> str:
@@ -48,6 +48,6 @@ def predict(file_path: str):
     text = auto_conv(file_path)
     ocr = len(set(text)) == 1
     if ocr:
-        ocrmypdf.ocr(file_path, 'buf.pdf', language=['rus'])
-        text = auto_conv('buf.pdf').replace('\n', ' ')
+        ocrmypdf.ocr(file_path, 'files/buf.pdf', language=['rus'])
+        text = auto_conv('files/buf.pdf').replace('\n', ' ')
     return model(text), ocr
