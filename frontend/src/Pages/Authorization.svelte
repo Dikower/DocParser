@@ -42,8 +42,13 @@
                 <button class={classForComp} on:click={setComp}>Компания</button>
             </div>
             <div class="boxForInput" style="margin-top: 2rem;">
-                <p>Название банка</p>
-                <input type="text" placeholder="Введите название вашего банка">
+                {#if companyType===0}
+                    <p>Логин</p>
+                    <input type="text" placeholder="Введите ваш логин">
+                {:else}
+                    <p>Название компании</p>
+                    <input type="text" placeholder="Введите название вашей компании">
+                {/if}
             </div>
             <div class="boxForInput">
                 <p>Пароль</p>
@@ -147,5 +152,23 @@
         font-size: 20px;
         width: 150px;
         letter-spacing: 1px;
+    }
+    @media only screen and (max-width: 1550px){
+        .glass{
+            left: 30%;
+            width: 40%;
+        }
+    }
+    @media only screen and (max-width: 1200px){
+        .glass{
+            left: 20%;
+            width: 60%;
+        }
+    }
+    @media only screen and (max-width: 800px){
+        .glass{
+            left: 10%;
+            width: 80%;
+        }
     }
 </style>

@@ -155,6 +155,7 @@
         left: 35%;
         top: 10vh;
         width: 30%;
+        
         /* height: 80vh; */
         background: linear-gradient(0deg, rgba(75, 123, 236, 0.2), rgba(75, 123, 236, 0.2)),
         linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8));
@@ -233,5 +234,32 @@
         font-weight: 600;
         text-align: center;
         margin-top: 1rem;
+    }
+
+    @media only screen and (max-width: 1600px){
+        .glass{
+            left: 30%;
+            top: 10vh;
+            width: 40%;
+            /* background-color: black; */
+        }
+        .glassForResults{
+            left: 20%;
+            top: 10vh;
+            width: 60%;
+        }
+    }
+    @media only screen and (max-width: 1150px){
+        .glass{
+            left: 20%;
+            top: 10vh;
+            width: 60%;
+            /* background-color: black; */
+        }
+        .glassForResults{
+            left: 20%;
+            top: 10vh;
+            width: 60%;
+        }
     }
 </style>

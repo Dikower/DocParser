@@ -3,14 +3,14 @@
 </script>
 
 <main>
-    <div style="margin-left: 3rem; width:40%">
+    <div style="margin-left: 3rem; width:60%">
         <div class="flex logo">
             <img src="/img/logo.svg" alt="" class="m-c">
             <img src="/img/Peach2Win.svg" alt="" class="m-c" style="margin-left: 1rem;">
         </div>
         
-        <p class="bigText">Название</p>
-        <p class="text">Тут описывается что нужно сделать что бы получить информацию, которую мы обработаем</p>
+        <p class="bigText">Платформа парсинга документов</p>
+        <p class="text" style="width:60%">Тут описывается что нужно сделать что бы получить информацию, которую мы обработаем</p>
         <button on:click={() => {push("/auth")}} class="btn-blue-border">Загрузить файлы</button>
     </div>
     <img class="imgForMen" src="/img/Group 36.png" alt="">
@@ -28,7 +28,7 @@
         font-size: 80px;
         font-family: 'Russo One', sans-serif;
 
-        margin-top: 16rem;
+        margin-top: 14rem;
     }
     .text {
         color: #FFFFFFA6;
@@ -58,5 +58,18 @@
     }
     .btn-blue-border:hover{
         background-color: rgb(44, 44, 41);
+    }
+    @media only screen and (max-height: 1000px){
+        .bigText{
+            margin-top: 6rem;
+        }
+        .btn-blue-border{
+            margin-top: 2rem;
+        }
+    }
+    @media only screen and (max-height: 800px){
+        .bigText{
+            margin-top: 2rem;
+        }
     }
 </style>
